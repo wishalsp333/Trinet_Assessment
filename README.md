@@ -1,8 +1,36 @@
-# Caching 
+# Cache Implementation in Python
 
-A cache implementation designed in python to store key-value pairs with a maximum size limit and [LRU](https://en.wikipedia.org/wiki/Cache_replacement_policies) (Least Recently Used) eviction strategy. The cache also provides additional features like filtering keys and basic thread-safety using locks.
 
-# Features
+
+- [Cache Implementation in Python](#cache-implementation-in-python)
+  - [Introduction](#introduction)
+  - [Installation](#installation)
+  - [Features](#features)
+  - [Cache Logic](#cache-logic)
+    - [LRU (Least Recently Used) Eviction Strategy](#lru-least-recently-used-eviction-strategy)
+    - [Thread-Safety](#thread-safety)
+  - [General Workflow](#general-workflow)
+  - [Unit Test Cases](#unit-test-cases)
+    - [Test Case Descriptions](#test-case-descriptions)
+  - [Summary](#summary)
+
+## Introduction
+
+This project presents a robust and efficient cache implementation in Python. Caching is a critical technique in computer science used to store frequently accessed data in order to reduce the time and resources required to retrieve it from the original source. This implementation is aimed at providing a versatile cache mechanism that can be easily integrated into various projects to improve performance.
+
+## Installation
+
+To use this cache implementation, follow these steps:
+
+1. Clone the repository:
+
+   bash
+   git clone https://github.com/wishalsp333/Trinet_Assessment.git
+   
+
+2. Move the `cache.py` file into your project directory.
+
+## Features
 
 1. Maximum cache size enforcement
 
@@ -15,100 +43,36 @@ A cache implementation designed in python to store key-value pairs with a maximu
 5. Thread safe
 
 
-# Requirements
-python >= 3.7
+## Cache Logic
 
-# Quickstart
-Let's start with some basic caching by creating a cache object:
+### LRU (Least Recently Used) Eviction Strategy
 
-```
-from cache import Cache
+The cache is implemented using an `OrderedDict`, which maintains the order of items based on their usage. The LRU eviction strategy ensures that the least recently used items are removed when the cache reaches its maximum capacity. This helps maintain the most relevant and frequently accessed data in the cache.
 
-cache = Cache()
-```
+### Thread-Safety
 
-By default the cache object will have a maximum size of 256
-```
-cache = Cache(maxsize=256)
-```
-Set a cache key using cache.set():
+The cache includes a `RLock` (Reentrant Lock) from the `threading` module to ensure thread-safety. This allows multiple threads to access the cache simultaneously while preventing data corruption or inconsistencies due to race conditions.
 
-```
-cache.set(1, 'foobar')
+## General Workflow
 
-```
-Get a cache key using cache.get():
+1. Initialize the cache with a maximum size (default is 256).
+2. Add key-value pairs to the cache using the `add` method.
+3. Retrieve values from the cache using the `get` method.
+4. Update existing values in the cache using the `update` method.
+5. Delete values from the cache using the `delete` method.
+6. Filter cache contents based on conditions using the `filter` method.
+7. Retrieve lists of keys and values in the cache using the `keys` and `values` methods.
+8. Clear all cache entries using the `clear` method.
 
-```
-assert cache.get(1) == 'foobar'
-```
+## Unit Test Cases
 
-Get a default value when cache key isn't set:
+Comprehensive unit test cases are provided in the `test.py` file. These test cases cover a wide range of scenarios to ensure the correctness and functionality of the Cache class. The test cases are structured to evaluate different cache operations, edge cases, and thread safety.
 
-```
-assert cache.get(2) is None
-```
-Update the value using cache.update():
-```
-cache.update(1,'Hello')
-assert cache.update(1) == 'Hello' (True)
-```
-Delete the value using cache.delete():
-```
-cache.delete(1)
-assert cache.get(1) == None
-```
+### Test Case Descriptions
 
-Filter the cache when key is list of strings
-```
-cache.add("key1", "value1")
-cache.add("key2", "value2")
-cache.add("key3", "value3")
+The unit tests cover various aspects of the cache, including adding, retrieving, updating, deleting, and filtering entries. Test cases for thread-safety and eviction strategies are also included.
 
-filtered_values = cache.filter(["key1", "key2"])
-expected_values = [["key1", "value1"], ["key2", "value2"]]
-self.assertEqual(filtered_values, expected_values) -> True
-```
 
-Filter the cache when key is pattern matching
-```
-cache.add("key1", "value1")
-cache.add("key2", "value2")
+## Summary
 
-filtered_values = cache._filter_keys("key*")
-expected_values = [("key1", "value1"), ("key2", "value2")]
-self.assertEqual(filtered_values, expected_values) -> True
-
-cache.add("apple", "fruit")
-cache.add("banana", "fruit")
-cache.add("carrot", "vegetable")
-
-pattern = re.compile(r"^(app|ban)")
-filtered_items = self.cache._filter_keys(pattern)
-expected_items = [("apple", "fruit"), ("banana", "fruit")]
-self.assertEqual(filtered_items, expected_items) -> True
-
-```
-
-Filter the cache when key is string
-```
-cache.add("key1", "value1")
-cache.add("key2", "value2")
-
-filtered_values = cache._filter_keys("key1")
-expected_values = [("key1", "value1")]
-self.assertEqual(filtered_values, expected_values) -> True
-```
-
-Cache Eviction when you add more than cache length
-```
-cache = Cache(3)
-
-cache.add("key1", "value1")
-cache.add("key2", "value2")
-cache.add("key3", "value3")
-cache.add("key4", "value4")
-
-self.assertIsNone(cache.get("key1))
-
-```
+This cache implementation offers a powerful solution for efficient data caching in Python projects. Leveraging the LRU eviction strategy and thread-safety mechanisms, it ensures that frequently accessed data is readily available, leading to improved performance. The detailed unit tests guarantee the reliability of the cache operations and behavior.
